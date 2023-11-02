@@ -1,2 +1,1 @@
-pycryptodome
-base58
+pycryptodome==3.19.0
