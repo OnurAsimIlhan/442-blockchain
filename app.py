@@ -27,6 +27,7 @@ class Blockchain:
 		self.chain = []
 		self.create_block(proof=1, previous_hash='0')
 
+
 	# This function is created
 	# to add further blocks
 	# into the chain
