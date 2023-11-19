@@ -1,9 +1,9 @@
-# wallet/utils.py
-from Crypto.Hash import RIPEMD160, SHA256
 import json
 
+from Crypto.Hash import RIPEMD160, SHA256
 
-def calculate_hash(data, hash_function: str = "sha256"):
+
+def calculate_hash(data, hash_function: str = "sha256") -> str:
     if type(data) == str:
         data = bytearray(data, "utf-8")
     if hash_function == "sha256":
@@ -14,7 +14,7 @@ def calculate_hash(data, hash_function: str = "sha256"):
         h = RIPEMD160.new()
         h.update(data)
         return h.hexdigest()
-    
+
 
 def generate_transaction_data(sender_bitcoin_address, receiver_bitcoin_address, amount: int) -> dict:
     return {

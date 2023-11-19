@@ -39,7 +39,7 @@ def build_merkle_tree(node_data: [str]) -> Node:
 
     for i in range(0, tree_depth):
         num_nodes = 2**(tree_depth-i)
-        new_set_of_nodes = []   
+        new_set_of_nodes = []
         for j in range(0, num_nodes, 2):
             child_node_0 = old_set_of_nodes[j]
             child_node_1 = old_set_of_nodes[j+1]
