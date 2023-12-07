@@ -9,6 +9,8 @@ from common.transaction_input import TransactionInput
 from common.transaction_output import TransactionOutput
 from common.utils import calculate_hash
 
+import requests
+
 
 class Owner:
     def __init__(self, private_key: RSA.RsaKey, public_key_hash, public_key_hex):
@@ -49,3 +51,25 @@ class Transaction:
             "inputs": [i.to_json() for i in self.inputs],
             "outputs": [i.to_json() for i in self.outputs]
         }
+        
+class Node:
+    def __init__(self):
+        ip = "127.0.0.1"
+        port = 5000
+        self.base_url = f"http://{ip}:{port}/"
+
+    def send(self, transaction_data: dict) -> requests.Response:
+        url = f"{self.base_url}transactions"
+        req_return = requests.post(url, json=transaction_data)
+        req_return.raise_for_status()
+        return req_return
+    
+class Wallet:
+    def __init__(self, owner: Owner):
+        self.owner = owner
+        self.node = Node()
+
+    def process_transaction(self, inputs: [TransactionInput], outputs: [TransactionOutput]) -> requests.Response:
+        transaction = Transaction(self.owner, inputs, outputs)
+        transaction.sign()
+        return self.node.send({"transaction": transaction.transaction_data})

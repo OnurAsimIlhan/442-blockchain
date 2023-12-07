@@ -3,6 +3,7 @@ import json
 from node.block import Block
 from node.script import StackScript
 
+import requests
 
 class NodeTransaction:
     def __init__(self, blockchain: Block):
@@ -69,3 +70,26 @@ class NodeTransaction:
 
     def validate_funds(self):
         assert self.get_total_amount_in_inputs() == self.get_total_amount_in_outputs()
+        
+    def broadcast(self):
+        node_list = [OtherNode("127.0.0.1", 5001), OtherNode("127.0.0.1", 5002)]
+        for node in node_list:
+            try:
+                node.send(self.transaction_data)
+            except requests.ConnectionError:
+                pass
+        
+class OtherNode:
+    def __init__(self, ip: str, port: int):
+        self.base_url = f"http://{ip}:{port}/"
+
+    def send(self, transaction_data: dict) -> requests.Response:
+        url = f"{self.base_url}transactions"
+        req_return = requests.post(url, json=transaction_data)
+        req_return.raise_for_status()
+        return req_return
+    
+class TransactionException(Exception):
+    def __init__(self, expression, message):
+        self.expression = expression
+        self.message = message
